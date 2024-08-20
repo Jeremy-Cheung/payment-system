@@ -21,6 +21,7 @@ import ExpandMore from "@mui/icons-material/ExpandMore";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import PersonIcon from "@mui/icons-material/Person";
 import PaymentIcon from "@mui/icons-material/Payment";
+import { Link } from "react-router-dom";
 
 interface Props {
   window?: () => Window;
@@ -30,6 +31,8 @@ const drawerWidth = 240;
 const navItems = ["Client", "Payment"];
 const clientItems = ["CREATE", "EDIT", "LIST"];
 const paymentItems = ["CREATE", "LIST"];
+const clientLinks = ["/clients/create", "/clients/edit", "/clients/list"];
+const paymentLinks = ["/payments/create", "/payments/list"];
 
 export default function Navbar(props: Props) {
   const { window } = props;
@@ -70,6 +73,12 @@ export default function Navbar(props: Props) {
     return [];
   };
 
+  const getMenuLinks = (navItem: string) => {
+    if (navItem === "Client") return clientLinks;
+    if (navItem === "Payment") return paymentLinks;
+    return [];
+  };
+
   // Side menu on clicking menu button
   const drawer = (
     <Box sx={{ textAlign: "center" }}>
@@ -88,7 +97,13 @@ export default function Navbar(props: Props) {
         <Collapse in={openClient} timeout="auto" unmountOnExit>
           <List component="div" disablePadding>
             {clientItems.map((item, index) => (
-              <ListItemButton key={index} sx={{ pl: 4 }}>
+              <ListItemButton
+                component={Link}
+                to={clientLinks[index]}
+                key={index}
+                sx={{ pl: 4 }}
+                onClick={handleDrawerToggle}
+              >
                 <ListItemText primary={item} />
               </ListItemButton>
             ))}
@@ -104,7 +119,13 @@ export default function Navbar(props: Props) {
         <Collapse in={openPayment} timeout="auto" unmountOnExit>
           <List component="div" disablePadding>
             {paymentItems.map((item, index) => (
-              <ListItemButton key={index} sx={{ pl: 4 }}>
+              <ListItemButton
+                component={Link}
+                to={paymentLinks[index]}
+                key={index}
+                sx={{ pl: 4 }}
+                onClick={handleDrawerToggle}
+              >
                 <ListItemText primary={item} />
               </ListItemButton>
             ))}
@@ -118,7 +139,7 @@ export default function Navbar(props: Props) {
     window !== undefined ? () => window().document.body : undefined;
 
   return (
-    <Box sx={{ display: "flex" }}>
+    <Box sx={{ display: "flex", position: "fixed" }}>
       <CssBaseline />
       <AppBar component="nav" sx={{ backgroundColor: "#252629" }}>
         <Toolbar sx={{ justifyContent: "flex-end", position: "relative" }}>
@@ -181,7 +202,12 @@ export default function Navbar(props: Props) {
             }}
           >
             {getMenuItems(activeNavItem!).map((subItem, index) => (
-              <MenuItem key={index} onClick={handleMenuClose}>
+              <MenuItem
+                component={Link}
+                to={getMenuLinks(activeNavItem!)[index]}
+                key={index}
+                onClick={handleMenuClose}
+              >
                 {subItem}
               </MenuItem>
             ))}
