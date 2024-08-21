@@ -3,7 +3,7 @@ import { IsString, IsNumber, IsOptional, IsNotEmpty } from 'class-validator';
 export class CreatePaymentDto {
   @IsNumber()
   @IsNotEmpty()
-  client_id: number;  // Foreign Key to Client
+  client_id: number; // Foreign Key to Client
 
   @IsNumber()
   @IsNotEmpty()
@@ -31,5 +31,5 @@ export class CreatePaymentDto {
 
   @IsString()
   @IsOptional()
-  status?: string;  // Defaults to "Pending" in the entity
+  status?: string; // Defaults to "Pending" in the entity
 }

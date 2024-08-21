@@ -1,4 +1,9 @@
-import { IsString, IsOptional, IsPhoneNumber, IsNotEmpty } from 'class-validator';
+import {
+  IsString,
+  IsOptional,
+  IsPhoneNumber,
+  IsNotEmpty,
+} from 'class-validator';
 
 export class CreateClientDto {
   @IsString()

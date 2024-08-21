@@ -7,11 +7,12 @@ import { CreatePaymentDto } from './dto/create-payment.dto';
 import { UpdatePaymentDto } from './dto/update-payment.dto';
 
 @Injectable()
-export class PaymentsService {  // Correct service name
+export class PaymentsService {
+  // Correct service name
   constructor(
     @InjectRepository(Payment)
     private readonly paymentRepository: Repository<Payment>,
-    
+
     @InjectRepository(Client)
     private readonly clientRepository: Repository<Client>,
   ) {}
@@ -22,7 +23,9 @@ export class PaymentsService {  // Correct service name
     });
 
     if (!client) {
-      throw new NotFoundException(`Client with ID ${createPaymentDto.client_id} not found`);
+      throw new NotFoundException(
+        `Client with ID ${createPaymentDto.client_id} not found`,
+      );
     }
 
     const payment = this.paymentRepository.create({
@@ -48,7 +51,10 @@ export class PaymentsService {  // Correct service name
     return payment;
   }
 
-  async update(payment_id: number, updatePaymentDto: UpdatePaymentDto): Promise<Payment> {
+  async update(
+    payment_id: number,
+    updatePaymentDto: UpdatePaymentDto,
+  ): Promise<Payment> {
     const payment = await this.paymentRepository.preload({
       payment_id,
       ...updatePaymentDto,

@@ -4,7 +4,7 @@ import { Client } from '../../clients/entities/client.entity';
 @Entity()
 export class Payment {
   @PrimaryGeneratedColumn()
-  payment_id: number;  // Primary Key
+  payment_id: number; // Primary Key
 
   @Column()
   amount: number;
@@ -24,9 +24,9 @@ export class Payment {
   @Column({ nullable: true })
   notes: string;
 
-  @Column({ default: "Pending" })
+  @Column({ default: 'Pending' })
   status: string;
 
   @ManyToOne(() => Client, (client) => client.payments)
-  client: Client;  // Foreign Key to Client
+  client: Client; // Foreign Key to Client
 }

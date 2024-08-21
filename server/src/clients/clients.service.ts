@@ -6,7 +6,8 @@ import { CreateClientDto } from './dto/create-client.dto';
 import { UpdateClientDto } from './dto/update-client.dto';
 
 @Injectable()
-export class ClientsService {  // Correct service name
+export class ClientsService {
+  // Correct service name
   constructor(
     @InjectRepository(Client)
     private readonly clientRepository: Repository<Client>,
@@ -22,16 +23,23 @@ export class ClientsService {  // Correct service name
   }
 
   async findOne(client_id: number): Promise<Client> {
-    const client = await this.clientRepository.findOne({ where: { client_id } });
+    const client = await this.clientRepository.findOne({
+      where: { client_id },
+    });
     if (!client) {
       throw new NotFoundException(`Client with ID ${client_id} not found`);
     }
     return client;
   }
 
-  async update(client_id: number, updateClientDto: UpdateClientDto): Promise<Client> {
+  async update(
+    client_id: number,
+    updateClientDto: UpdateClientDto,
+  ): Promise<Client> {
     await this.clientRepository.update(client_id, updateClientDto);
-    const updatedClient = await this.clientRepository.findOne({ where: { client_id } });
+    const updatedClient = await this.clientRepository.findOne({
+      where: { client_id },
+    });
     if (!updatedClient) {
       throw new NotFoundException(`Client with ID ${client_id} not found`);
     }

@@ -4,7 +4,7 @@ import { Payment } from '../../payments/entities/payment.entity';
 @Entity()
 export class Client {
   @PrimaryGeneratedColumn()
-  client_id: number;  // Primary Key
+  client_id: number; // Primary Key
 
   @Column()
   first_name: string;

@@ -8,8 +8,8 @@ import { ClientsModule } from '../clients/clients.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Payment, Client]),  // Register Payment and Client entities
-    ClientsModule,  // Import ClientsModule to access ClientsService
+    TypeOrmModule.forFeature([Payment, Client]), // Register Payment and Client entities
+    ClientsModule, // Import ClientsModule to access ClientsService
   ],
   controllers: [PaymentsController],
   providers: [PaymentsService],
