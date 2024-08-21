@@ -30,6 +30,14 @@ export class PaymentsController {
     return this.paymentsService.findOne(+id);
   }
 
+  @Patch(':id/status')
+  async updatePaymentStatus(
+    @Param('id') id: number,
+    @Body('status') status: string,
+  ) {
+    return this.paymentsService.updatePaymentStatus(id, status);
+  }
+
   @Patch(':id')
   update(@Param('id') id: string, @Body() updatePaymentDto: UpdatePaymentDto) {
     return this.paymentsService.update(+id, updatePaymentDto);

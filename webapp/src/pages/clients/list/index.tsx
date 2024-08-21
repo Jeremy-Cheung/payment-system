@@ -16,7 +16,7 @@ interface Client {
   bank_acct_no?: string;
 }
 
-export default function ClientListPage() {
+export default function ListClient() {
   const apiUrl = "http://localhost:5000";
   const [clients, setClients] = useState<Client[]>([]);
   const [error, setError] = useState<string | null>(null);

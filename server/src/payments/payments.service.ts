@@ -51,6 +51,17 @@ export class PaymentsService {
     return payment;
   }
 
+  async updatePaymentStatus(paymentId: number, status: string): Promise<Payment> {
+    const payment = await this.paymentRepository.findOneBy({ payment_id: paymentId });
+
+    if (!payment) {
+      throw new NotFoundException(`Payment with ID ${paymentId} not found`);
+    }
+
+    payment.status = status;
+    return this.paymentRepository.save(payment);
+  }
+
   async update(
     payment_id: number,
     updatePaymentDto: UpdatePaymentDto,
