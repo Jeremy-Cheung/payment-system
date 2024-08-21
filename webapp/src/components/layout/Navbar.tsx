@@ -135,6 +135,7 @@ export default function Navbar(props: Props) {
     </Box>
   );
 
+  // Check if window object present to prevent undefined error
   const container =
     window !== undefined ? () => window().document.body : undefined;
 
