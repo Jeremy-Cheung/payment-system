@@ -11,6 +11,10 @@ export class CreatePaymentDto {
 
   @IsString()
   @IsNotEmpty()
+  currency: string;
+
+  @IsString()
+  @IsNotEmpty()
   rcpt_first_name: string;
 
   @IsString()

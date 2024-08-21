@@ -10,6 +10,9 @@ export class Payment {
   amount: number;
 
   @Column()
+  currency: string;
+
+  @Column()
   rcpt_first_name: string;
 
   @Column()

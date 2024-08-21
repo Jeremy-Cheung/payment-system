@@ -14,7 +14,7 @@ interface Client {
   addr_line2?: string;
   addr_line3?: string;
   postcode: string;
-  country: string; // Country name
+  country: string;
   phone_number: string;
   bank_acct_no?: string;
 }
@@ -176,7 +176,14 @@ export default function UpdateClient() {
   };
 
   return (
-    <Box sx={{ paddingTop: 8, paddingLeft: "8vw", paddingRight: "8vw", paddingBottom: 2  }}>
+    <Box
+      sx={{
+        paddingTop: 8,
+        paddingLeft: "8vw",
+        paddingRight: "8vw",
+        paddingBottom: 2,
+      }}
+    >
       <h1>Update Client</h1>
       <form onSubmit={handleSubmit}>
         <Grid container spacing={2}>
