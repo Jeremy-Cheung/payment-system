@@ -1,6 +1,7 @@
 import {
   Controller,
   Get,
+  Put,
   Post,
   Body,
   Patch,
@@ -16,8 +17,16 @@ export class ClientsController {
   constructor(private readonly clientsService: ClientsService) {}
 
   @Post()
-  create(@Body() createClientDto: CreateClientDto) {
-    return this.clientsService.create(createClientDto);
+  async create(@Body() createClientDto: CreateClientDto) {
+    return await this.clientsService.create(createClientDto);
+  }
+
+  @Put(':id')
+  async updateClient(
+    @Param('id') id: number,
+    @Body() updateClientDto: UpdateClientDto,
+  ) {
+    return this.clientsService.updateClient(id, updateClientDto);
   }
 
   @Get()
@@ -32,7 +41,7 @@ export class ClientsController {
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateClientDto: UpdateClientDto) {
-    return this.clientsService.update(+id, updateClientDto);
+    return this.clientsService.updateClient(+id, updateClientDto);
   }
 
   @Delete(':id')

@@ -7,15 +7,15 @@ import Autocomplete from "@mui/material/Autocomplete";
 import countries from "../../../utils/countries";
 
 interface FormValues {
-  firstName: string;
-  lastName: string;
-  addrLine1: string;
-  addrLine2?: string;
-  addrLine3?: string;
+  first_name: string;
+  last_name: string;
+  addr_line1: string;
+  addr_line2?: string;
+  addr_line3?: string;
   postcode: string;
   country: string;
-  phoneNumber: string;
-  bankAccount?: string;
+  phone_number: string;
+  bank_acct_no?: string;
 }
 
 interface Errors {
@@ -23,16 +23,17 @@ interface Errors {
 }
 
 export default function CreateClient() {
+  const apiUrl = "http://localhost:5000";
   const [formValues, setFormValues] = React.useState<FormValues>({
-    firstName: "",
-    lastName: "",
-    addrLine1: "",
-    addrLine2: "",
-    addrLine3: "",
+    first_name: "",
+    last_name: "",
+    addr_line1: "",
+    addr_line2: "",
+    addr_line3: "",
     postcode: "",
     country: "",
-    phoneNumber: "",
-    bankAccount: "",
+    phone_number: "",
+    bank_acct_no: "",
   });
 
   const [errors, setErrors] = React.useState<Errors>({});
@@ -56,25 +57,43 @@ export default function CreateClient() {
   const validate = (): boolean => {
     const newErrors: Errors = {};
 
-    if (!formValues.firstName) newErrors.firstName = "First name is required";
-    if (!formValues.lastName) newErrors.lastName = "Last name is required";
-    if (!formValues.addrLine1)
+    if (!formValues.first_name) newErrors.firstName = "First name is required";
+    if (!formValues.last_name) newErrors.lastName = "Last name is required";
+    if (!formValues.addr_line1)
       newErrors.addrLine1 = "Address line 1 is required";
     if (!formValues.postcode)
       newErrors.postcode = "Postcode/Zipcode is required";
     if (!formValues.country) newErrors.country = "Country is required";
-    if (!formValues.phoneNumber)
-      newErrors.phoneNumber = "Phone number is required";
+    if (!formValues.phone_number)
+      newErrors.phone_number = "Phone number is required";
 
     setErrors(newErrors);
 
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (event: { preventDefault: () => void }) => {
+  const handleSubmit = async (event: { preventDefault: () => void }) => {
     event.preventDefault();
     if (validate()) {
-      console.log("Form submitted:", formValues);
+      try {
+        console.log(apiUrl);
+        const response = await fetch(`${apiUrl}/clients`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formValues),
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log("Client created successfully:", data);
+      } catch (error) {
+        console.error("Error creating client:", error);
+      }
     }
   };
 
@@ -86,44 +105,44 @@ export default function CreateClient() {
           <Grid item xs={12} sm={6}>
             <TextField
               required
-              id="firstName"
+              id="first_name"
               label="First name"
-              value={formValues.firstName}
+              value={formValues.first_name}
               onChange={handleChange}
-              helperText={errors.firstName || "(required)"}
-              error={!!errors.firstName}
+              helperText={errors.first_name || "(required)"}
+              error={!!errors.first_name}
               fullWidth
             />
           </Grid>
           <Grid item xs={12} sm={6}>
             <TextField
               required
-              id="lastName"
+              id="last_name"
               label="Last name"
-              value={formValues.lastName}
+              value={formValues.last_name}
               onChange={handleChange}
-              helperText={errors.lastName || "(required)"}
-              error={!!errors.lastName}
+              helperText={errors.last_name || "(required)"}
+              error={!!errors.last_name}
               fullWidth
             />
           </Grid>
           <Grid item xs={12}>
             <TextField
               required
-              id="addrLine1"
+              id="addr_line1"
               label="Address line 1"
-              value={formValues.addrLine1}
+              value={formValues.addr_line1}
               onChange={handleChange}
-              helperText={errors.addrLine1 || "(required)"}
-              error={!!errors.addrLine1}
+              helperText={errors.addr_line1 || "(required)"}
+              error={!!errors.addr_line1}
               fullWidth
             />
           </Grid>
           <Grid item xs={12}>
             <TextField
-              id="addrLine2"
+              id="addr_line2"
               label="Address line 2"
-              value={formValues.addrLine2}
+              value={formValues.addr_line2}
               onChange={handleChange}
               helperText="(Optional)"
               fullWidth
@@ -131,9 +150,9 @@ export default function CreateClient() {
           </Grid>
           <Grid item xs={12}>
             <TextField
-              id="addrLine3"
+              id="addr_line3"
               label="Address line 3"
-              value={formValues.addrLine3}
+              value={formValues.addr_line3}
               onChange={handleChange}
               helperText="(Optional)"
               fullWidth
@@ -172,9 +191,9 @@ export default function CreateClient() {
           </Grid>
           <Grid item xs={12} sm={6}>
             <TextField
-              id="phoneNumber"
+              id="phone_number"
               label="Phone number"
-              value={formValues.phoneNumber}
+              value={formValues.phone_number}
               onChange={handleChange}
               helperText={errors.phoneNumber || "(Required)"}
               error={!!errors.phoneNumber}
@@ -183,9 +202,9 @@ export default function CreateClient() {
           </Grid>
           <Grid item xs={12} sm={6}>
             <TextField
-              id="bankAccount"
+              id="bank_acct_no"
               label="Bank account"
-              value={formValues.bankAccount}
+              value={formValues.bank_acct_no}
               onChange={handleChange}
               helperText="(Optional)"
               fullWidth

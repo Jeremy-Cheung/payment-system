@@ -32,18 +32,23 @@ export class ClientsService {
     return client;
   }
 
-  async update(
+  async updateClient(
     client_id: number,
     updateClientDto: UpdateClientDto,
   ): Promise<Client> {
-    await this.clientRepository.update(client_id, updateClientDto);
-    const updatedClient = await this.clientRepository.findOne({
-      where: { client_id },
+    // Use a criteria object to find the client
+    const client = await this.clientRepository.findOne({
+      where: { client_id: client_id },
     });
-    if (!updatedClient) {
+
+    if (!client) {
       throw new NotFoundException(`Client with ID ${client_id} not found`);
     }
-    return updatedClient;
+
+    // Update client properties
+    Object.assign(client, updateClientDto);
+
+    return this.clientRepository.save(client);
   }
 
   async remove(client_id: number): Promise<void> {
