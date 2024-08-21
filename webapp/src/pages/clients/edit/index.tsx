@@ -38,7 +38,9 @@ interface Errors {
 export default function UpdateClient() {
   const apiUrl = "http://localhost:5000";
   const [clients, setClients] = React.useState<Client[]>([]);
-  const [selectedClient, setSelectedClient] = React.useState<Client | null>(null);
+  const [selectedClient, setSelectedClient] = React.useState<Client | null>(
+    null
+  );
   const [formValues, setFormValues] = React.useState<FormValues>({
     first_name: "",
     last_name: "",
@@ -73,7 +75,7 @@ export default function UpdateClient() {
 
   // Convert country name to alpha-2 code
   const getAlpha2CountryCode = (countryName: string) => {
-    const country = countries.find(c => c.name === countryName);
+    const country = countries.find((c) => c.name === countryName);
     return country ? country.code : countryName;
   };
 
@@ -150,13 +152,16 @@ export default function UpdateClient() {
 
     if (validate()) {
       try {
-        const response = await fetch(`${apiUrl}/clients/${selectedClient.client_id}`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(formValues),
-        });
+        const response = await fetch(
+          `${apiUrl}/clients/${selectedClient.client_id}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(formValues),
+          }
+        );
 
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -180,8 +185,12 @@ export default function UpdateClient() {
             <Autocomplete
               disablePortal
               options={clients}
-              getOptionLabel={(option) => 
-                `${option.first_name} ${option.last_name} (${getAlpha2CountryCode(option.country)}) - ${option.phone_number}`
+              getOptionLabel={(option) =>
+                `${option.first_name} ${
+                  option.last_name
+                } (${getAlpha2CountryCode(option.country)}) - ${
+                  option.phone_number
+                }`
               }
               value={selectedClient}
               onChange={handleAutocompleteChange}
@@ -274,11 +283,15 @@ export default function UpdateClient() {
               id="country"
               options={countries}
               getOptionLabel={(option) => option.name}
-              onChange={(_, value) => setFormValues({
-                ...formValues,
-                country: value ? value.name : "",
-              })}
-              value={countries.find((c) => c.name === formValues.country) || null}
+              onChange={(_, value) =>
+                setFormValues({
+                  ...formValues,
+                  country: value ? value.name : "",
+                })
+              }
+              value={
+                countries.find((c) => c.name === formValues.country) || null
+              }
               renderInput={(params) => (
                 <TextField
                   {...params}
@@ -319,11 +332,7 @@ export default function UpdateClient() {
                 justifyContent: "flex-end",
               }}
             >
-              <Button
-                type="submit"
-                variant="contained"
-                color="primary"
-              >
+              <Button type="submit" variant="contained" color="primary">
                 Submit
               </Button>
             </Box>

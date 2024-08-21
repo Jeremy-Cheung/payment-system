@@ -78,9 +78,9 @@ export default function CreateClient() {
       try {
         console.log(apiUrl);
         const response = await fetch(`${apiUrl}/clients`, {
-          method: 'POST',
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
           body: JSON.stringify(formValues),
         });
