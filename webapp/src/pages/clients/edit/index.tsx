@@ -7,7 +7,7 @@ import Autocomplete from "@mui/material/Autocomplete";
 import countries from "../../../utils/countries";
 
 interface Client {
-  client_id: string;
+  client_id: number;
   first_name: string;
   last_name: string;
   addr_line1: string;
@@ -176,7 +176,7 @@ export default function UpdateClient() {
   };
 
   return (
-    <Box sx={{ paddingTop: 8, paddingLeft: "8vw", paddingRight: "8vw" }}>
+    <Box sx={{ paddingTop: 8, paddingLeft: "8vw", paddingRight: "8vw", paddingBottom: 2  }}>
       <h1>Update Client</h1>
       <form onSubmit={handleSubmit}>
         <Grid container spacing={2}>

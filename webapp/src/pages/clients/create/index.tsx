@@ -98,7 +98,7 @@ export default function CreateClient() {
   };
 
   return (
-    <Box sx={{ paddingTop: 8, paddingLeft: "8vw", paddingRight: "8vw" }}>
+    <Box sx={{ paddingTop: 8, paddingLeft: "8vw", paddingRight: "8vw", paddingBottom: 2 }}>
       <h1>Create Client</h1>
       <form onSubmit={handleSubmit}>
         <Grid container spacing={2}>
