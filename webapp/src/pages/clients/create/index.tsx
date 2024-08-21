@@ -1,10 +1,11 @@
-import * as React from "react";
+import { useState } from "react";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import Autocomplete from "@mui/material/Autocomplete";
 import countries from "../../../utils/countries";
+import Notification from "../../../components/common/Notification";
 
 interface FormValues {
   first_name: string;
@@ -24,7 +25,7 @@ interface Errors {
 
 export default function CreateClient() {
   const apiUrl = "http://localhost:5000";
-  const [formValues, setFormValues] = React.useState<FormValues>({
+  const [formValues, setFormValues] = useState<FormValues>({
     first_name: "",
     last_name: "",
     addr_line1: "",
@@ -36,7 +37,12 @@ export default function CreateClient() {
     bank_acct_no: "",
   });
 
-  const [errors, setErrors] = React.useState<Errors>({});
+  const [toastOpen, setToastOpen] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
+  const [toastSeverity, setToastSeverity] = useState<"success" | "error">(
+    "success"
+  );
+  const [errors, setErrors] = useState<Errors>({});
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = event.target;
@@ -51,6 +57,10 @@ export default function CreateClient() {
       ...formValues,
       country: value ? value.name : "",
     });
+  };
+
+  const handleCloseToast = () => {
+    setToastOpen(false);
   };
 
   // Check if entry in field
@@ -88,17 +98,28 @@ export default function CreateClient() {
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
-
         const data = await response.json();
-        console.log("Client created successfully:", data);
+        setToastMessage("Client created");
+        setToastSeverity("success");
       } catch (error) {
         console.error("Error creating client:", error);
+        setToastMessage("Request failed");
+        setToastSeverity("error");
+      } finally {
+        setToastOpen(true);
       }
     }
   };
 
   return (
-    <Box sx={{ paddingTop: 8, paddingLeft: "8vw", paddingRight: "8vw", paddingBottom: 2 }}>
+    <Box
+      sx={{
+        paddingTop: 8,
+        paddingLeft: "8vw",
+        paddingRight: "8vw",
+        paddingBottom: 2,
+      }}
+    >
       <h1>Create Client</h1>
       <form onSubmit={handleSubmit}>
         <Grid container spacing={2}>
@@ -229,6 +250,12 @@ export default function CreateClient() {
           </Grid>
         </Grid>
       </form>
+      <Notification
+        open={toastOpen}
+        message={toastMessage}
+        severity={toastSeverity}
+        onClose={handleCloseToast}
+      />
     </Box>
   );
 }

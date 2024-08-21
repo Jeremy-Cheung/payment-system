@@ -1,10 +1,11 @@
-import * as React from "react";
+import { useState, useEffect } from "react";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import Autocomplete from "@mui/material/Autocomplete";
 import countries from "../../../utils/countries";
+import Notification from "../../../components/common/Notification";
 
 interface Client {
   client_id: number;
@@ -37,11 +38,9 @@ interface Errors {
 
 export default function UpdateClient() {
   const apiUrl = "http://localhost:5000";
-  const [clients, setClients] = React.useState<Client[]>([]);
-  const [selectedClient, setSelectedClient] = React.useState<Client | null>(
-    null
-  );
-  const [formValues, setFormValues] = React.useState<FormValues>({
+  const [clients, setClients] = useState<Client[]>([]);
+  const [selectedClient, setSelectedClient] = useState<Client | null>(null);
+  const [formValues, setFormValues] = useState<FormValues>({
     first_name: "",
     last_name: "",
     addr_line1: "",
@@ -52,21 +51,31 @@ export default function UpdateClient() {
     phone_number: "",
     bank_acct_no: "",
   });
-
-  const [errors, setErrors] = React.useState<Errors>({});
+  const [errors, setErrors] = useState<Errors>({});
+  const [toastOpen, setToastOpen] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
+  const [toastSeverity, setToastSeverity] = useState<"success" | "error">(
+    "success"
+  );
 
   // Fetch clients on component load
-  React.useEffect(() => {
+  useEffect(() => {
     const fetchClients = async () => {
       try {
         const response = await fetch(`${apiUrl}/clients`);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
+        setToastMessage('Client edited');
+        setToastSeverity('success');
         const data = await response.json();
         setClients(data);
       } catch (error) {
         console.error("Error fetching clients:", error);
+        setToastMessage('Request failed');
+        setToastSeverity('error');
+      } finally {
+        setToastOpen(true);
       }
     };
 
@@ -117,6 +126,10 @@ export default function UpdateClient() {
         bank_acct_no: "",
       });
     }
+  };
+
+  const handleCloseToast = () => {
+    setToastOpen(false);
   };
 
   // Validate form fields
@@ -346,6 +359,12 @@ export default function UpdateClient() {
           </Grid>
         </Grid>
       </form>
+      <Notification
+        open={toastOpen}
+        message={toastMessage}
+        severity={toastSeverity}
+        onClose={handleCloseToast}
+      />
     </Box>
   );
 }

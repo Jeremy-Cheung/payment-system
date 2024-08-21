@@ -1,4 +1,4 @@
-import * as React from "react";
+import { useState, useEffect } from "react";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
@@ -9,6 +9,7 @@ import InputLabel from "@mui/material/InputLabel";
 import FormControl from "@mui/material/FormControl";
 import countries from "../../../utils/countries";
 import Autocomplete from "@mui/material/Autocomplete";
+import Notification from "../../../components/common/Notification";
 
 const currencies = ["USD", "GBP", "EUR", "SGD", "HKD", "JPY"];
 
@@ -42,11 +43,9 @@ interface Errors {
 
 export default function CreatePayment() {
   const apiUrl = "http://localhost:5000";
-  const [clients, setClients] = React.useState<Client[]>([]);
-  const [selectedClient, setSelectedClient] = React.useState<Client | null>(
-    null
-  );
-  const [formValues, setFormValues] = React.useState<PaymentFormValues>({
+  const [clients, setClients] = useState<Client[]>([]);
+  const [selectedClient, setSelectedClient] = useState<Client | null>(null);
+  const [formValues, setFormValues] = useState<PaymentFormValues>({
     client_id: 0,
     amount: 0,
     currency: "",
@@ -56,10 +55,12 @@ export default function CreatePayment() {
     rcpt_acct_no: "",
     notes: "",
   });
+  const [toastOpen, setToastOpen] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
+  const [toastSeverity, setToastSeverity] = useState<'success' | 'error'>('success');
+  const [errors, setErrors] = useState<Errors>({});
 
-  const [errors, setErrors] = React.useState<Errors>({});
-
-  React.useEffect(() => {
+  useEffect(() => {
     const fetchClients = async () => {
       try {
         const response = await fetch(`${apiUrl}/clients`);
@@ -108,6 +109,10 @@ export default function CreatePayment() {
     }));
   };
 
+  const handleCloseToast = () => {
+    setToastOpen(false);
+  };
+
   const validate = (): boolean => {
     const newErrors: Errors = {};
 
@@ -152,9 +157,14 @@ export default function CreatePayment() {
         }
 
         const data = await response.json();
-        console.log("Payment created successfully:", data);
+        setToastMessage('Payment created');
+      setToastSeverity('success');
       } catch (error) {
         console.error("Error creating payment:", error);
+        setToastMessage('Request failed');
+        setToastSeverity('error');
+      } finally {
+        setToastOpen(true);
       }
     }
   };
@@ -296,6 +306,12 @@ export default function CreatePayment() {
           </Grid>
         </Grid>
       </form>
+      <Notification
+        open={toastOpen}
+        message={toastMessage}
+        severity={toastSeverity}
+        onClose={handleCloseToast}
+      />
     </Box>
   );
 }
