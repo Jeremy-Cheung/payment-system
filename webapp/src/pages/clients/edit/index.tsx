@@ -66,16 +66,10 @@ export default function UpdateClient() {
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
-        setToastMessage('Client edited');
-        setToastSeverity('success');
         const data = await response.json();
         setClients(data);
       } catch (error) {
         console.error("Error fetching clients:", error);
-        setToastMessage('Request failed');
-        setToastSeverity('error');
-      } finally {
-        setToastOpen(true);
       }
     };
 
@@ -179,11 +173,15 @@ export default function UpdateClient() {
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
-
+        setToastSeverity('success');
         const data = await response.json();
         console.log("Client updated successfully:", data);
       } catch (error) {
         console.error("Error updating client:", error);
+        setToastMessage('Request failed');
+        setToastSeverity('error');
+      } finally {
+        setToastOpen(true);
       }
     }
   };
