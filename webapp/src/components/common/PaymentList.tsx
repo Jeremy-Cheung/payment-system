@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
+import ExpandLess from "@mui/icons-material/ExpandLess";
+import ExpandMore from "@mui/icons-material/ExpandMore";
 import Collapse from "@mui/material/Collapse";
 import Grid from "@mui/material/Grid";
 import Dialog from "@mui/material/Dialog";
@@ -50,7 +52,7 @@ export default function PaymentList({
 }: Payment) {
   const [open, setOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
-  const [status, setStatus] = useState(initialStatus); // Track status in state
+  const [status, setStatus] = useState(initialStatus);
 
   const toggleCollapse = () => {
     setOpen(!open);
@@ -61,8 +63,8 @@ export default function PaymentList({
     return country ? country.code : countryName;
   };
 
-  // Define button color based on status
-  const buttonColor = status === "pending" ? "#ebb65b" : status === "approved" ? "#58d160" : "#ebb65b"; // Default color
+  const buttonColor =
+    status === "pending" ? "#ebb65b" : status === "approved" ? "#58d160" : "#ebb65b";
 
   const handleApprove = async () => {
     try {
@@ -78,7 +80,6 @@ export default function PaymentList({
         throw new Error('Failed to update status');
       }
 
-      // Fetch updated payment data after successful update
       const updatedResponse = await fetch(`http://localhost:5000/payments/${payment_id}`);
       if (!updatedResponse.ok) {
         throw new Error('Failed to fetch updated payment');
@@ -93,15 +94,7 @@ export default function PaymentList({
   };
 
   return (
-    <Box
-      border={1}
-      borderColor="#656566"
-      borderRadius={1}
-      paddingLeft={"8vw"}
-      paddingRight={"8vw"}
-      paddingTop={3}
-      paddingBottom={2}
-    >
+    <Box border={1} borderColor="#656566" borderRadius={1} p={2}>
       <Grid
         container
         spacing={2}
@@ -111,7 +104,7 @@ export default function PaymentList({
       >
         {/* Collapsed View */}
         <Grid item xs={12}>
-          <Grid container spacing={1}>
+          <Grid container spacing={1} alignItems="center">
             <Grid item xs={12} sm={3}>
               <Typography variant="body2">
                 <strong>
@@ -119,19 +112,22 @@ export default function PaymentList({
                 </strong>
               </Typography>
             </Grid>
-            <Grid item xs={12} sm={4}>
+            <Grid item xs={12} sm={3}>
               <Typography variant="body2">
                 <strong>
                   TOTAL - {amount} {currency}
                 </strong>
               </Typography>
             </Grid>
-            <Grid item xs={12} sm={4}>
+            <Grid item xs={12} sm={3}>
               <Typography variant="body2">
                 <strong>
                   RECIPIENT: {rcpt_first_name} {rcpt_last_name}
                 </strong>
               </Typography>
+            </Grid>
+            <Grid item xs={12} sm={3} container justifyContent="flex-end" alignItems="center">
+              {open ? <ExpandLess /> : <ExpandMore />}
             </Grid>
           </Grid>
         </Grid>
@@ -150,7 +146,7 @@ export default function PaymentList({
               '&:hover': { backgroundColor: buttonColor },
               '&:disabled': { backgroundColor: buttonColor } // Ensure color is consistent when disabled
             }}
-            disabled={status === "approved"} // Disable button if status is approved
+            disabled={status === "approved"}
           >
             <Box sx={{ marginLeft: 2, marginRight: 2 }}>{status}</Box>
           </Button>

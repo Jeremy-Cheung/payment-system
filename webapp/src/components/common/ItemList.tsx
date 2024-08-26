@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import Button from "@mui/material/Button";
+import ExpandLess from "@mui/icons-material/ExpandLess";
+import ExpandMore from "@mui/icons-material/ExpandMore";
 import Collapse from "@mui/material/Collapse";
 import Grid from "@mui/material/Grid";
 
@@ -40,7 +41,7 @@ export default function ItemList({
     <Box border={1} borderColor="#656566" borderRadius={1} p={2}>
       <Grid container spacing={2} alignItems="center" onClick={toggleCollapse} style={{ cursor: 'pointer' }}>
         <Grid item xs={12}>
-          <Grid container spacing={1}>
+          <Grid container spacing={1} alignItems="center">
             <Grid item xs={12} sm={2}>
               <Typography variant="body2">
                 <strong>Client ID:</strong> {client_id}
@@ -66,9 +67,10 @@ export default function ItemList({
                 <strong>Phone Number:</strong> {phone_number}
               </Typography>
             </Grid>
+            <Grid item xs={12} sm={2} container justifyContent="flex-end" alignItems="center">
+              {open ? <ExpandLess /> : <ExpandMore />}
+            </Grid>
           </Grid>
-        </Grid>
-        <Grid item xs={4} container justifyContent="flex-end">
         </Grid>
       </Grid>
       <Collapse in={open}>
