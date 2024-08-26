@@ -1,4 +1,3 @@
-import "@/styles/globals.css";
 import type { AppProps } from "next/app";
 import Navbar from "../components/layout/Navbar";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
