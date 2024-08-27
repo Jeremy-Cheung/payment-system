@@ -46,10 +46,52 @@ export default function CreateClient() {
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = event.target;
-    setFormValues({
-      ...formValues,
-      [id]: value,
-    });
+
+    let newValue = value;
+
+    switch (id) {
+      case "first_name":
+      case "last_name":
+        newValue = value.replace(/[^a-zA-Z]/g, ""); 
+        if (newValue.length <= 50) {
+          setFormValues({ ...formValues, [id]: newValue });
+        }
+        break;
+
+      case "addr_line1":
+      case "addr_line2":
+      case "addr_line3":
+        newValue = value.replace(/[^a-zA-Z0-9\s,.-]/g, ""); 
+        if (newValue.length <= 100) {
+          setFormValues({ ...formValues, [id]: newValue });
+        }
+        break;
+
+      case "postcode":
+        newValue = value.replace(/[^a-zA-Z0-9]/g, ""); 
+        if (newValue.length <= 10) {
+          setFormValues({ ...formValues, [id]: newValue });
+        }
+        break;
+
+      case "phone_number":
+        newValue = value.replace(/\D/g, ""); 
+        if (newValue.length <= 15 && newValue.length >= 9) {
+          setFormValues({ ...formValues, [id]: newValue });
+        }
+        break;
+
+      case "bank_acct_no":
+        newValue = value.replace(/\D/g, ""); 
+        if (newValue.length <= 20) {
+          setFormValues({ ...formValues, [id]: newValue });
+        }
+        break;
+
+      default:
+        setFormValues({ ...formValues, [id]: value });
+        break;
+    }
   };
 
   const handleAutocompleteChange = (_: any, value: { name: string } | null) => {
@@ -63,14 +105,13 @@ export default function CreateClient() {
     setToastOpen(false);
   };
 
-  // Check if entry in field
   const validate = (): boolean => {
     const newErrors: Errors = {};
 
-    if (!formValues.first_name) newErrors.firstName = "First name is required";
-    if (!formValues.last_name) newErrors.lastName = "Last name is required";
+    if (!formValues.first_name) newErrors.first_name = "First name is required";
+    if (!formValues.last_name) newErrors.last_name = "Last name is required";
     if (!formValues.addr_line1)
-      newErrors.addrLine1 = "Address line 1 is required";
+      newErrors.addr_line1 = "Address line 1 is required";
     if (!formValues.postcode)
       newErrors.postcode = "Postcode/Zipcode is required";
     if (!formValues.country) newErrors.country = "Country is required";
@@ -130,8 +171,9 @@ export default function CreateClient() {
               label="First name"
               value={formValues.first_name}
               onChange={handleChange}
-              helperText={errors.first_name || "(required)"}
+              helperText={errors.first_name || "(Required)"}
               error={!!errors.first_name}
+              inputProps={{ maxLength: 50 }}
               fullWidth
             />
           </Grid>
@@ -142,8 +184,9 @@ export default function CreateClient() {
               label="Last name"
               value={formValues.last_name}
               onChange={handleChange}
-              helperText={errors.last_name || "(required)"}
+              helperText={errors.last_name || "(Required)"}
               error={!!errors.last_name}
+              inputProps={{ maxLength: 50 }} 
               fullWidth
             />
           </Grid>
@@ -154,8 +197,9 @@ export default function CreateClient() {
               label="Address line 1"
               value={formValues.addr_line1}
               onChange={handleChange}
-              helperText={errors.addr_line1 || "(required)"}
+              helperText={errors.addr_line1 || "(Required)"}
               error={!!errors.addr_line1}
+              inputProps={{ maxLength: 100 }}
               fullWidth
             />
           </Grid>
@@ -166,6 +210,7 @@ export default function CreateClient() {
               value={formValues.addr_line2}
               onChange={handleChange}
               helperText="(Optional)"
+              inputProps={{ maxLength: 100 }} 
               fullWidth
             />
           </Grid>
@@ -176,6 +221,7 @@ export default function CreateClient() {
               value={formValues.addr_line3}
               onChange={handleChange}
               helperText="(Optional)"
+              inputProps={{ maxLength: 100 }}
               fullWidth
             />
           </Grid>
@@ -216,8 +262,9 @@ export default function CreateClient() {
               label="Phone number"
               value={formValues.phone_number}
               onChange={handleChange}
-              helperText={errors.phoneNumber || "(Required)"}
-              error={!!errors.phoneNumber}
+              helperText={errors.phone_number || "(Required)"}
+              error={!!errors.phone_number}
+              inputProps={{ maxLength: 15, minLength: 9 }} // 15 max length for international
               fullWidth
             />
           </Grid>
@@ -228,6 +275,7 @@ export default function CreateClient() {
               value={formValues.bank_acct_no}
               onChange={handleChange}
               helperText="(Optional)"
+              inputProps={{ maxLength: 20 }}
               fullWidth
             />
           </Grid>
