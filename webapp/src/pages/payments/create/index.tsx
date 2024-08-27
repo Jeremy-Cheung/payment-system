@@ -341,6 +341,7 @@ export default function CreatePayment() {
               helperText="(Optional)"
               multiline
               rows={4}
+              inputProps={{ maxLength: 255 }} 
               fullWidth
             />
           </Grid>

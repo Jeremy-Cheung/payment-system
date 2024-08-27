@@ -115,7 +115,7 @@ export default function UpdateClient() {
 
       case "phone_number":
         newValue = value.replace(/\D/g, ""); 
-        if (newValue.length <= 15 && newValue.length >= 9) {
+        if (newValue.length <= 15) {
           setFormValues({ ...formValues, [id]: newValue });
         }
         break;
@@ -377,7 +377,7 @@ export default function UpdateClient() {
               onChange={handleChange}
               helperText={errors.phone_number || "(Required)"}
               error={!!errors.phone_number}
-              inputProps={{ maxLength: 15, minLength: 9 }} // 15 max length for international
+              inputProps={{ maxLength: 15}} // 15 max length for international
               fullWidth
             />
           </Grid>
