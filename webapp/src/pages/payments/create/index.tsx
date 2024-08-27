@@ -28,7 +28,7 @@ interface Client {
 
 interface PaymentFormValues {
   client_id: number;
-  amount: number;
+  amount: string;
   currency: string;
   rcpt_first_name: string;
   rcpt_last_name: string;
@@ -47,7 +47,7 @@ export default function CreatePayment() {
   const [selectedClient, setSelectedClient] = useState<Client | null>(null);
   const [formValues, setFormValues] = useState<PaymentFormValues>({
     client_id: 0,
-    amount: 0,
+    amount: "",
     currency: "",
     rcpt_first_name: "",
     rcpt_last_name: "",
@@ -84,27 +84,63 @@ export default function CreatePayment() {
 
   const handleAutocompleteChange = (_: any, client: Client | null) => {
     setSelectedClient(client);
-    setFormValues((prevValues) => ({
-      ...prevValues,
+    setFormValues((formValues) => ({
+      ...formValues,
       client_id: client ? client.client_id : 0, // Update client_id based on selected client
     }));
   };
 
-  const handleChange = (
-    event: React.ChangeEvent<
-      HTMLInputElement | { name?: string; value: unknown }
-    >
-  ) => {
-    const { id, value } = event.target as HTMLInputElement;
-    setFormValues((prevValues) => ({
-      ...prevValues,
-      [id || event.target.name!]: value,
-    }));
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { id, value } = event.target;
+
+    let newValue = value;
+
+    switch (id) {
+      case "rcpt_first_name":
+      case "rcpt_last_name":
+        newValue = value.replace(/[^a-zA-Z]/g, "");
+        if (newValue.length <= 50) {
+          setFormValues({ ...formValues, [id]: newValue });
+        }
+        break;
+
+      case "rcpt_bank_name":
+        newValue = value.replace(/[^a-zA-Z\s,.-]/g, "");
+        if (newValue.length <= 50) {
+          setFormValues({ ...formValues, [id]: newValue });
+        }
+        break;
+
+      case "rcpt_acct_no":
+        newValue = value.replace(/\D/g, "");
+        if (newValue.length <= 20) {
+          setFormValues({ ...formValues, [id]: newValue });
+        }
+        break;
+
+      case "amount":
+        newValue = value.replace(/[^0-9.]/g, "");
+        const numberValue = parseFloat(newValue);
+        if (newValue !== "" && !isNaN(numberValue) && numberValue >= 0.01) {
+          newValue = numberValue.toFixed(2);  // Format to 2 decimal places
+        } else if (newValue === "") {
+          newValue = "";
+        }
+        setFormValues((prevValues) => ({
+          ...prevValues,
+          [id]: newValue,
+        }));
+        break;
+
+      default:
+        setFormValues({ ...formValues, [id]: value });
+        break;
+    }
   };
 
   const handleSelectChange = (event: SelectChangeEvent<string>) => {
-    setFormValues((prevValues) => ({
-      ...prevValues,
+    setFormValues((formValues) => ({
+      ...formValues,
       currency: event.target.value,
     }));
   };
@@ -144,12 +180,18 @@ export default function CreatePayment() {
     if (validate()) {
       try {
         console.log(formValues);
+        const amountNumber = parseFloat(formValues.amount);
+
+        if (isNaN(amountNumber) || amountNumber < 0.01) {
+          throw new Error("Invalid amount");
+        }
+
         const response = await fetch(`${apiUrl}/payments`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(formValues),
+          body: JSON.stringify({...formValues, amount: amountNumber,}),
         });
 
         if (!response.ok) {
@@ -157,8 +199,9 @@ export default function CreatePayment() {
         }
 
         const data = await response.json();
+        console.log("Payment created successfully:", data);
         setToastMessage('Payment created');
-      setToastSeverity('success');
+        setToastSeverity('success');
       } catch (error) {
         console.error("Error creating payment:", error);
         setToastMessage('Request failed');
@@ -207,17 +250,17 @@ export default function CreatePayment() {
             />
           </Grid>
           <Grid item xs={12} md={6}>
-            <TextField
-              required
-              id="amount"
-              label="Amount"
-              type="number"
-              value={formValues.amount}
-              onChange={handleChange}
-              helperText={errors.amount || "(Required)"}
-              error={!!errors.amount}
-              fullWidth
-            />
+          <TextField
+            required
+            id="amount"
+            label="Amount"
+            value={formValues.amount}
+            onChange={handleChange}
+            inputProps={{ pattern: "[0-9]*", inputMode: "decimal" }}
+            helperText={errors.amount || "(Required)"}
+            error={!!errors.amount}
+            fullWidth
+          />
           </Grid>
           <Grid item xs={12} md={6}>
             <FormControl fullWidth required error={!!errors.currency}>
@@ -246,6 +289,7 @@ export default function CreatePayment() {
               onChange={handleChange}
               helperText={errors.rcpt_first_name || "(Required)"}
               error={!!errors.rcpt_first_name}
+              inputProps={{ maxLength: 50 }} 
               fullWidth
             />
           </Grid>
@@ -258,6 +302,7 @@ export default function CreatePayment() {
               onChange={handleChange}
               helperText={errors.rcpt_last_name || "(Required)"}
               error={!!errors.rcpt_last_name}
+              inputProps={{ maxLength: 50 }} 
               fullWidth
             />
           </Grid>
@@ -270,6 +315,7 @@ export default function CreatePayment() {
               onChange={handleChange}
               helperText={errors.rcpt_bank_name || "(Required)"}
               error={!!errors.rcpt_bank_name}
+              inputProps={{ maxLength: 50 }} 
               fullWidth
             />
           </Grid>
@@ -282,6 +328,7 @@ export default function CreatePayment() {
               onChange={handleChange}
               helperText={errors.rcpt_acct_no || "(Required)"}
               error={!!errors.rcpt_acct_no}
+              inputProps={{ maxLength: 20 }} 
               fullWidth
             />
           </Grid>
