@@ -14,7 +14,13 @@ A sample environment file is located in the following directory:
     cd server
     ```
 
-2. Start the server:
+2. Install dependencies of `server`:
+
+    ```bash
+    npm install
+    ```
+
+3. Start the server:
 
     ```bash
     npm run start
@@ -26,6 +32,12 @@ A sample environment file is located in the following directory:
 
     ```bash
     cd webapp
+    ```
+
+2. Install dependencies of `webapp`:
+
+    ```bash
+    npm install
     ```
 
 2. Start the webapp in development mode:
